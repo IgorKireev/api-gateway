@@ -7,6 +7,7 @@ from app.broker.broker import broker
 from app.routers.base import router as base_router
 from app.routers.orders import router as orders_router
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await broker.start()

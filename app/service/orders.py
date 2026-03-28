@@ -29,35 +29,43 @@ class OrderService:
     async def create(self, request: OrderRequestSchema) -> OrderResponseSchema | None:
         total_price = sum(item.price * item.quantity for item in request.items)
         try:
-            customer = await self.repository.create_entity(Customer(
-                first_name=request.customer.first_name,
-                last_name=request.customer.last_name,
-                phone_number=request.customer.phone_number,
-                email=request.customer.email,
-            ))
+            customer = await self.repository.create_entity(
+                Customer(
+                    first_name=request.customer.first_name,
+                    last_name=request.customer.last_name,
+                    phone_number=request.customer.phone_number,
+                    email=request.customer.email,
+                )
+            )
 
-            address = await self.repository.create_entity(ShoppingAddress(
-                country=request.shipping_address.country,
-                city=request.shipping_address.city,
-                street=request.shipping_address.street,
-                postal_code=request.shipping_address.postal_code,
-            ))
+            address = await self.repository.create_entity(
+                ShoppingAddress(
+                    country=request.shipping_address.country,
+                    city=request.shipping_address.city,
+                    street=request.shipping_address.street,
+                    postal_code=request.shipping_address.postal_code,
+                )
+            )
 
-            order = await self.repository.create_entity(Order(
-                customer_id=customer.id,
-                shipping_address_id=address.id,
-                currency=request.currency,
-                total_price=total_price,
-                comment=request.comment,
-            ))
+            order = await self.repository.create_entity(
+                Order(
+                    customer_id=customer.id,
+                    shipping_address_id=address.id,
+                    currency=request.currency,
+                    total_price=total_price,
+                    comment=request.comment,
+                )
+            )
 
             for item in request.items:
-                await self.repository.create_entity(Item(
-                    order_id=order.id,
-                    sku=item.sku,
-                    quantity=item.quantity,
-                    price=item.price,
-                ))
+                await self.repository.create_entity(
+                    Item(
+                        order_id=order.id,
+                        sku=item.sku,
+                        quantity=item.quantity,
+                        price=item.price,
+                    )
+                )
 
             await self.repository.commit()
 
@@ -75,7 +83,7 @@ class OrderService:
                             price=item.price,
                         )
                         for item in request.items
-                    ]
+                    ],
                 )
             )
             return to_order_response(order)

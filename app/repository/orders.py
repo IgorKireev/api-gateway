@@ -17,17 +17,14 @@ class OrderRepository:
         return orders.scalars().all()
 
     async def get_order(self, order_id: uuid.UUID) -> Order | None:
-        query = (
-            select(Order)
-            .filter(Order.order_id == order_id)
-        )
+        query = select(Order).filter(Order.order_id == order_id)
         order = await self.session.execute(query)
         return order.scalars().one_or_none()
 
     async def create_entity(
         self,
         entity: Order | ShoppingAddress | Customer | Item,
-        ) -> Order | ShoppingAddress | Customer | Item:
+    ) -> Order | ShoppingAddress | Customer | Item:
         self.session.add(entity)
         await self.session.flush()
         await self.session.refresh(entity)

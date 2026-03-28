@@ -48,6 +48,4 @@ class Item(Base):
     sku: Mapped[str] = mapped_column(String(50))
     quantity: Mapped[int] = mapped_column()
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
-    order_id: Mapped[int] = mapped_column(
-        ForeignKey("orders.id", ondelete="CASCADE")
-    )
+    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id", ondelete="CASCADE"))

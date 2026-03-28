@@ -12,6 +12,7 @@ T = TypeVar("T")
 def get_repository(repo_class: Type[T]) -> Callable:
     def _get_repository(session: AsyncSession = Depends(get_session)) -> T:
         return repo_class(session)
+
     return _get_repository
 
 
@@ -20,6 +21,7 @@ def get_service(service_class: Type[T], repo_class) -> Callable:
         repository=Depends(get_repository(repo_class)),
     ) -> T:
         return service_class(repository)
+
     return _get_service
 
 

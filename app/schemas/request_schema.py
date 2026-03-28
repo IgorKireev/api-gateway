@@ -11,9 +11,9 @@ class Item(BaseModel):
 
 
 class Customer(BaseModel):
-    first_name:  Annotated[str, Field(min_length=1, max_length=30)]
-    last_name:  Annotated[str, Field(min_length=1, max_length=30)]
-    phone_number: Annotated[str, Field(pattern=r'^\+?[0-9]{10,15}$')]
+    first_name: Annotated[str, Field(min_length=1, max_length=30)]
+    last_name: Annotated[str, Field(min_length=1, max_length=30)]
+    phone_number: Annotated[str, Field(pattern=r"^\+?[0-9]{10,15}$")]
     email: EmailStr
 
 

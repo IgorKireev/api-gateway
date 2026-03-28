@@ -1,4 +1,4 @@
-from faststream.rabbit import RabbitExchange, RabbitQueue, ExchangeType
+from faststream.rabbit import RabbitExchange, ExchangeType
 
 from app.broker.broker import broker
 from app.schemas.event_schema import OrderCreatedEvent
@@ -11,6 +11,7 @@ orders_exchange = RabbitExchange(
 )
 
 order_created_publisher = broker.publisher(exchange=orders_exchange)
+
 
 async def publish_order_created(event: OrderCreatedEvent) -> None:
     await order_created_publisher.publish(event)
