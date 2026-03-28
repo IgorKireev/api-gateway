@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
     DB_HOST: str
     DB_PORT: int
@@ -27,5 +28,14 @@ class Settings(BaseSettings):
             f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}"
             f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
         )
+
+    @property
+    def rabbitmq_url(self) -> str:
+        return (
+            f"amqp://{self.RABBITMQ_USER}:{self.RABBITMQ_PASS}"
+            f"@{self.RABBITMQ_HOST}:{self.RABBITMQ_PORT}"
+            f"{self.RABBITMQ_VHOST}"
+        )
+
 
 settings = Settings()

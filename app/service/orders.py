@@ -4,10 +4,13 @@ from app.repository.orders import OrderRepository
 
 from app.schemas.response_schema import OrderResponseSchema
 from app.schemas.request_schema import OrderRequestSchema
+from app.schemas.event_schema import OrderItemEvent, OrderCreatedEvent
 
 from app.models.orders import Order, Customer, ShoppingAddress, Item
 from app.exceptions import OrderCreationError, OrderNotFoundError
 from app.mapper import to_order_response
+from app.broker.publisher import publish_order_created
+
 
 class OrderService:
     def __init__(self, order_repository: OrderRepository):
@@ -57,6 +60,24 @@ class OrderService:
                 ))
 
             await self.repository.commit()
+
+            await publish_order_created(
+                OrderCreatedEvent(
+                    order_id=order.order_id,
+                    total_price=total_price,
+                    currency=request.currency,
+                    customer_email=request.customer.email,
+                    created_at=order.created_at,
+                    items=[
+                        OrderItemEvent(
+                            sku=item.sku,
+                            quantity=item.quantity,
+                            price=item.price,
+                        )
+                        for item in request.items
+                    ]
+                )
+            )
             return to_order_response(order)
         except IntegrityError:
             await self.repository.rollback()
